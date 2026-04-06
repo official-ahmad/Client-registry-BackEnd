@@ -3,7 +3,7 @@
 ## Using cURL (Windows PowerShell)
 
 ```powershell
-Invoke-RestMethod -Uri https://client-registry-backend.onrender.com//api/jobs -Method POST -ContentType "application/json" -Body '{
+Invoke-RestMethod -Uri https://client-registry-backend.onrender.com/api/jobs -Method POST -ContentType "application/json" -Body '{
   "customerName": "Test Customer",
   "customerPhone": "03001234567",
   "deviceModel": "Samsung Galaxy S21",
