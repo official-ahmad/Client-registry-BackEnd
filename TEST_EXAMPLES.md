@@ -3,7 +3,7 @@
 ## Using cURL (Windows PowerShell)
 
 ```powershell
-Invoke-RestMethod -Uri http://localhost:8000/api/jobs -Method POST -ContentType "application/json" -Body '{
+Invoke-RestMethod -Uri https://client-registry-backend.onrender.com//api/jobs -Method POST -ContentType "application/json" -Body '{
   "customerName": "Test Customer",
   "customerPhone": "03001234567",
   "deviceModel": "Samsung Galaxy S21",
@@ -16,10 +16,10 @@ Invoke-RestMethod -Uri http://localhost:8000/api/jobs -Method POST -ContentType 
 ## Using JavaScript Fetch (Browser Console)
 
 ```javascript
-fetch('http://localhost:8000/api/jobs', {
-  method: 'POST',
+fetch("https://client-registry-backend.onrender.com//api/jobs", {
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   body: JSON.stringify({
     customerName: "Test Customer",
@@ -27,12 +27,12 @@ fetch('http://localhost:8000/api/jobs', {
     deviceModel: "Samsung Galaxy S21",
     imei: "987654321012345",
     serviceType: "FRP",
-    price: 2500
-  })
+    price: 2500,
+  }),
 })
-.then(response => response.json())
-.then(data => console.log('Success:', data))
-.catch(error => console.error('Error:', error));
+  .then((response) => response.json())
+  .then((data) => console.log("Success:", data))
+  .catch((error) => console.error("Error:", error));
 ```
 
 ## Expected Response
@@ -56,29 +56,34 @@ fetch('http://localhost:8000/api/jobs', {
 ## Test All Endpoints
 
 ### 1. Create Job
+
 ```bash
-POST http://localhost:8000/api/jobs
+POST https://client-registry-backend.onrender.com//api/jobs
 ```
 
 ### 2. Get All Jobs
+
 ```bash
-GET http://localhost:8000/api/jobs
+GET https://client-registry-backend.onrender.com//api/jobs
 ```
 
 ### 3. Update Job Status
+
 ```bash
-PATCH http://localhost:8000/api/jobs/{_id}
+PATCH https://client-registry-backend.onrender.com//api/jobs/{_id}
 Body: { "status": "In-Progress" }
 ```
 
 ### 4. Track Job
+
 ```bash
-GET http://localhost:8000/api/jobs/track/OA-45678
+GET https://client-registry-backend.onrender.com//api/jobs/track/OA-45678
 ```
 
 ## Test Different Service Types
 
 ### FRP Unlock
+
 ```json
 {
   "customerName": "Ahmad Khan",
@@ -91,6 +96,7 @@ GET http://localhost:8000/api/jobs/track/OA-45678
 ```
 
 ### Screen Lock
+
 ```json
 {
   "customerName": "Ali Shah",
@@ -103,6 +109,7 @@ GET http://localhost:8000/api/jobs/track/OA-45678
 ```
 
 ### Software Flash
+
 ```json
 {
   "customerName": "Hassan Ahmed",
@@ -117,6 +124,7 @@ GET http://localhost:8000/api/jobs/track/OA-45678
 ## Expected Errors
 
 ### Duplicate IMEI
+
 ```json
 {
   "error": "IMEI already exists in the system"
@@ -124,6 +132,7 @@ GET http://localhost:8000/api/jobs/track/OA-45678
 ```
 
 ### Missing Required Field
+
 ```json
 {
   "error": "Job validation failed: customerName: Path `customerName` is required."
@@ -131,6 +140,7 @@ GET http://localhost:8000/api/jobs/track/OA-45678
 ```
 
 ### Invalid Service Type
+
 ```json
 {
   "error": "Job validation failed: serviceType: `Invalid Service` is not a valid enum value for path `serviceType`."
