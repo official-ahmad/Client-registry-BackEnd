@@ -1,6 +1,6 @@
 # Client Registry - Backend API
 
-A complete MERN stack backend for managing mobile unlocking service jobs.
+A complete MERN stack backend for managing Digital service jobs.
 
 ## Features
 
