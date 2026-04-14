@@ -51,14 +51,40 @@ app.patch("/api/jobs/:id", async (req, res) => {
       delete payload.imei;
     }
 
+    const currentJob = await Job.findById(req.params.id);
+    if (!currentJob) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    const nextStatus = payload.status || currentJob.status;
+    if (payload.paymentStatus === "Paid" && nextStatus !== "Delivered") {
+      return res.status(400).json({
+        error: "Payment can only be marked as Paid after the job is Delivered",
+      });
+    }
+
+    if (
+      payload.status &&
+      payload.status !== "Delivered" &&
+      currentJob.paymentStatus === "Paid" &&
+      !payload.paymentStatus
+    ) {
+      payload.paymentStatus = "Pending";
+      payload.paidAt = null;
+    }
+
+    if (payload.paymentStatus === "Paid") {
+      payload.paidAt = new Date();
+    }
+
+    if (payload.paymentStatus === "Pending") {
+      payload.paidAt = null;
+    }
+
     const updatedJob = await Job.findByIdAndUpdate(req.params.id, payload, {
       new: true,
       runValidators: true,
     });
-
-    if (!updatedJob) {
-      return res.status(404).json({ error: "Job not found" });
-    }
 
     res.json(updatedJob);
   } catch (err) {
@@ -125,9 +151,12 @@ app.get("/api/jobs/:id/receipt", async (req, res) => {
       deviceModel: job.deviceModel,
       cnic: job.cnic,
       serviceType: job.serviceType,
+      customService: job.customService,
       status: job.status,
+      paymentStatus: job.paymentStatus || "Pending",
       price: job.price,
       receivedAt: job.receivedAt,
+      paidAt: job.paidAt,
       issuedAt: job.receivedAt,
     });
   } catch (err) {

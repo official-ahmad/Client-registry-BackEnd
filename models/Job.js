@@ -9,14 +9,21 @@ const JobSchema = new mongoose.Schema({
   cnic: { type: String, default: "" },
   serviceType: {
     type: String,
-    enum: ["", "FRP", "Screen Lock", "Software"],
+    enum: ["", "FRP", "Screen Lock", "Software", "Other"],
     default: "",
   },
+  customService: { type: String, default: "" },
   status: {
     type: String,
     enum: ["Received", "In-Progress", "Ready", "Delivered"],
     default: "Received",
   },
+  paymentStatus: {
+    type: String,
+    enum: ["Pending", "Paid"],
+    default: "Pending",
+  },
+  paidAt: { type: Date, default: null },
   price: { type: Number, default: 0 },
   receivedAt: { type: Date, default: Date.now },
 });
