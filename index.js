@@ -13,16 +13,63 @@ app.use(express.json());
 // Connect Database
 connectDB();
 
+const VALID_SERVICE_TYPES = ["", "FRP", "Screen Lock", "Software", "Other"];
+
+const normalizeServicePayload = (payload) => {
+  const next = { ...payload };
+  const hasServiceType = Object.prototype.hasOwnProperty.call(
+    next,
+    "serviceType",
+  );
+  const hasCustomService = Object.prototype.hasOwnProperty.call(
+    next,
+    "customService",
+  );
+
+  if (!hasServiceType && !hasCustomService) {
+    return next;
+  }
+
+  if (!hasServiceType && hasCustomService) {
+    next.customService =
+      typeof next.customService === "string" ? next.customService.trim() : "";
+    return next;
+  }
+
+  const serviceType =
+    typeof next.serviceType === "string" ? next.serviceType.trim() : "";
+  const customService =
+    typeof next.customService === "string" ? next.customService.trim() : "";
+
+  if (serviceType === "Other") {
+    next.serviceType = "Other";
+    next.customService = customService;
+    return next;
+  }
+
+  if (!VALID_SERVICE_TYPES.includes(serviceType)) {
+    next.serviceType = "Other";
+    next.customService = customService || serviceType;
+    return next;
+  }
+
+  next.serviceType = serviceType;
+  next.customService = serviceType === "" ? "" : customService;
+  return next;
+};
+
 // --- ROUTES ---
 
 // 1. POST /api/jobs - Create a New Job
 app.post("/api/jobs", async (req, res) => {
   try {
-    const payload = { ...req.body };
+    let payload = { ...req.body };
     if (!payload.cnic && payload.imei) {
       payload.cnic = payload.imei;
       delete payload.imei;
     }
+
+    payload = normalizeServicePayload(payload);
 
     const newJob = new Job(payload);
     const savedJob = await newJob.save();
@@ -45,11 +92,13 @@ app.get("/api/jobs", async (req, res) => {
 // 3. PATCH /api/jobs/:id - Update Job Status or Details
 app.patch("/api/jobs/:id", async (req, res) => {
   try {
-    const payload = { ...req.body };
+    let payload = { ...req.body };
     if (!payload.cnic && payload.imei) {
       payload.cnic = payload.imei;
       delete payload.imei;
     }
+
+    payload = normalizeServicePayload(payload);
 
     const currentJob = await Job.findById(req.params.id);
     if (!currentJob) {
@@ -170,5 +219,5 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Something went wrong!" });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
