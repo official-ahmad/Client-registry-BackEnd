@@ -17,8 +17,6 @@ A complete MERN stack backend for managing Digital service jobs.
 npm install
 ```
 
-
-
 ## Running the Server
 
 ```bash
@@ -28,6 +26,16 @@ npm start
 # Development (with nodemon)
 npm run dev
 ```
+
+## Authentication
+
+The API is now protected by a login endpoint. Set these environment variables before starting the server:
+
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `AUTH_TOKEN_SECRET`
+
+You can copy `.env.example` and fill in your real values.
 
 ## API Endpoints
 
