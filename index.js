@@ -321,6 +321,7 @@ app.get("/api/jobs/:id/receipt", requireAuth, async (req, res) => {
       customService: job.customService,
       status: job.status,
       paymentStatus: job.paymentStatus || "Pending",
+      paymentMethod: job.paymentMethod || "Cash",
       price: job.price,
       receivedAt: job.receivedAt,
       paidAt: job.paidAt,

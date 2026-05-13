@@ -23,6 +23,11 @@ const JobSchema = new mongoose.Schema({
     enum: ["Pending", "Paid"],
     default: "Pending",
   },
+  paymentMethod: {
+    type: String,
+    enum: ["Cash", "JazzCash", "Easypaisa", "Bank Transfer", "Other"],
+    default: "Cash",
+  },
   paidAt: { type: Date, default: null },
   price: { type: Number, default: 0 },
   receivedAt: { type: Date, default: Date.now },
