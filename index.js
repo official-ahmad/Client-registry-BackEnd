@@ -8,7 +8,7 @@ const Job = require("./models/Job");
 const app = express();
 
 // Middleware
-app.use(cors((origin = "*")));
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 // Connect Database
@@ -293,7 +293,7 @@ app.get("/api/jobs/:id/receipt", requireAuth, async (req, res) => {
       ? { jobId: inputId }
       : { $or: [{ _id: inputId }, { jobId: inputId }] };
 
-    const job = await Job.findOne(query);
+    let job = await Job.findOne(query);
 
     if (!job) {
       return res.status(404).json({ error: "Job not found" });
@@ -302,8 +302,12 @@ app.get("/api/jobs/:id/receipt", requireAuth, async (req, res) => {
     if (!job.receiptId) {
       const randomNum = Math.floor(1000 + Math.random() * 9000);
       const timestamp = Date.now().toString().slice(-6);
-      job.receiptId = `RCT-${timestamp}${randomNum}`;
-      await job.save();
+      const newReceiptId = `RCT-${timestamp}${randomNum}`;
+      job = await Job.findByIdAndUpdate(
+        job._id,
+        { receiptId: newReceiptId },
+        { new: true }
+      );
     }
 
     res.json({
